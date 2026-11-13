@@ -1,0 +1,336 @@
+/* VARIJABLE */
+
+:root {
+  --ui:   clamp(34px, 6.2vh, 52px);   /* veličina dugmadi u traci */
+  --blue: #007aff;
+  --red:  #d92d2d;
+}
+
+
+/* OSNOVA (bez zuma, skrola, označavanja i plavog okvira na dodir) */
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+html,
+body {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: none;
+  background: #ffffff;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: transparent;
+}
+
+button {
+  font: inherit;
+  border: 0;
+  outline: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+button:focus {
+  outline: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+
+/* PLATNO */
+
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  touch-action: none;
+}
+
+#paper {
+  z-index: 1;
+  pointer-events: none;
+}
+
+#ink {
+  z-index: 2;
+}
+
+
+/* BRISANJE S GUMICOM */
+
+#eraser-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  pointer-events: none;
+  will-change: transform, width, height;
+
+  border: 2px solid rgba(110, 110, 110, 0.9);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+
+/* POTPIS */
+
+#credit {
+  position: fixed;
+  top: 8px;
+  right: calc(14px + env(safe-area-inset-right, 0px));
+  z-index: 5;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(100, 100, 100, 0.45);
+  pointer-events: none;
+}
+
+#safe-probe {
+  position: fixed;
+  visibility: hidden;
+  pointer-events: none;
+  padding-left:  env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+
+/* TRAKA S ALATIMA */
+
+#toolbar {
+  position: fixed;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+  transform: translateX(-50%);
+  z-index: 10;
+
+  display: flex;
+  align-items: center;
+  gap: calc(var(--ui) * 0.28);
+  max-width: calc(100% - 24px);
+  padding: calc(var(--ui) * 0.2) calc(var(--ui) * 0.4);
+
+  background: rgba(248, 249, 251, 0.97);
+  border: 1px solid rgba(0, 0, 0, 0.35);
+  border-radius: 999px;
+  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.18);
+}
+
+.divider {
+  width: 1px;
+  height: calc(var(--ui) * 0.8);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+
+/* Boje  */
+
+.swatch {
+  flex: none;
+  width: var(--ui);
+  height: var(--ui);
+  border-radius: 50%;
+  background: var(--c);
+  box-shadow: 0 0 0 2px #ffffff, 0 1px 4px rgba(0, 0, 0, 0.35);
+  transition: transform 0.12s, box-shadow 0.12s;
+}
+
+.swatch:active {
+  transform: scale(0.86);
+}
+
+.swatch.active {
+  box-shadow: 0 0 0 3px #ffffff, 0 0 0 6px var(--blue);
+}
+
+
+/* Dugmad */
+
+.btn {
+  height: var(--ui);
+  padding: 0 calc(var(--ui) * 0.5);
+  border-radius: 999px;
+  background: #ececee;
+  color: #111111;
+  font-size: calc(var(--ui) * 0.36);
+  font-weight: 700;
+  white-space: nowrap;
+  transition: transform 0.12s, background-color 0.12s, box-shadow 0.12s;
+}
+
+.btn:active {
+  transform: scale(0.94);
+  background: #d8d8dc;
+}
+
+.btn.active {
+  box-shadow: inset 0 0 0 3px var(--blue);
+}
+
+.btn-clef.on {
+  background: var(--blue);
+  color: #ffffff;
+}
+
+.btn-clef.on:active {
+  background: #0062cc;
+}
+
+.btn-danger {
+  color: var(--red);
+}
+
+.btn-solid-danger {
+  background: var(--red);
+  color: #ffffff;
+}
+
+.btn-solid-danger:active {
+  background: #b82424;
+}
+
+.clef-icon {
+  font-family: "Noto Music", "Bravura Text", "Segoe UI Symbol", "Noto Sans Symbols 2", "Apple Symbols", serif;
+  font-size: 1.2em;
+}
+
+
+/* DEBLJINA OLOVKE */
+
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 20;
+}
+
+.popup {
+  position: fixed;
+  z-index: 21;
+  width: min(320px, calc(100% - 24px));
+  padding: 14px 16px 18px;
+
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 18px;
+  box-shadow: 0 10px 34px rgba(0, 0, 0, 0.28);
+}
+
+.popup-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-weight: 700;
+  color: #222222;
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 64px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  background: #f3f3f5;
+  border-radius: 12px;
+}
+
+#size-dot {
+  display: block;
+  flex: none;
+  border-radius: 50%;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 32px;
+  margin: 0;
+  background: transparent;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: #d4d4d9;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 30px;
+  height: 30px;
+  margin-top: -12px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: var(--blue);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+}
+
+
+ /* POTVRDA BRISANJA */
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.dialog {
+  width: min(380px, calc(100% - 32px));
+  padding: 22px;
+  text-align: center;
+
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 14px 44px rgba(0, 0, 0, 0.35);
+}
+
+.dialog h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+
+.dialog p {
+  margin: 0 0 20px;
+  font-size: 16px;
+  color: #555555;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.dialog-actions .btn {
+  flex: 1;
+}

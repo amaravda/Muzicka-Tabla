@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Muzička Tabla</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Sloj 1: linijski sistemi i violinski ključ -->
+  <canvas id="paper"></canvas>
+  <!-- Sloj 2: ono što se crta -->
+  <canvas id="ink"></canvas>
+  <!-- Sivi obris gumice (prati prst) -->
+  <div id="eraser-cursor" class="hidden"></div>
+  <!-- Potpis (uvijek vidljiv, gore desno) -->
+  <div id="credit">Napravio: Amar Avda</div>
+  <!-- Služi samo za očitavanje sigurnih margina -->
+  <div id="safe-probe"></div>
+
+
+  <!-- TRAKA S ALATIMA -->
+
+  <div id="toolbar">
+
+    <button class="swatch" data-tool="black"  aria-label="Crna"></button>
+    <button class="swatch" data-tool="red"    aria-label="Crvena"></button>
+    <button class="swatch" data-tool="yellow" aria-label="Žuta"></button>
+
+    <span class="divider"></span>
+
+    <button class="btn" id="btn-eraser" data-tool="eraser">Gumica</button>
+
+    <button class="btn btn-clef" id="btn-clef">
+      <span class="clef-icon">&#x1D11E;</span> Ključ: <span id="clef-state">OFF</span>
+    </button>
+
+    <span class="divider"></span>
+
+    <button class="btn btn-danger" id="btn-clear">Obriši sve</button>
+
+  </div>
+
+
+  <!-- DEBLJINA PISANJA --> 
+
+  <div id="popup-backdrop" class="backdrop hidden"></div>
+
+  <div id="size-popup" class="popup hidden">
+
+    <div class="popup-head">
+      <span id="size-title">Debljina</span>
+      <span id="size-value">4 px</span>
+    </div>
+
+    <div class="preview">
+      <span id="size-dot"></span>
+    </div>
+
+    <input id="size-range" type="range" min="1" max="40" step="1" value="4">
+
+  </div>
+
+
+  <!-- POTVRDA BRISANJA -->
+
+  <div id="confirm" class="overlay hidden">
+
+    <div class="dialog">
+
+      <h2>Obrisati sve?</h2>
+      <p>Sve napisano bit će izbrisano.</p>
+
+      <div class="dialog-actions">
+        <button class="btn" id="confirm-no">Odustani</button>
+        <button class="btn btn-solid-danger" id="confirm-yes">Da, obriši</button>
+      </div>
+
+    </div>
+
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
